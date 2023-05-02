@@ -215,4 +215,24 @@ def errors_to_stats(errors, cs=True):
     return resd
 
 
+def normal_given_scale(a):
+    """Returns a normal pdf function with given scale parameter.
+       Used in impulse_var"""
+    return lambda x: np.exp(-(x/a)**2)/(np.abs(a)*np.sqrt(np.pi))
+
+
+def impulse_var(dv, scale):
+    """
+    Covers ones in an binary variable with normal distributions with given scale
+    """
+    
+    f = normal_given_scale(scale)
+    peaks = np.where(dv)[0]
+    idx = np.arange(len(dv))
+    res = np.zeros(len(dv))
+    for i in peaks:
+        partial = f(idx - i)
+        res += partial
+    return res
+
 
